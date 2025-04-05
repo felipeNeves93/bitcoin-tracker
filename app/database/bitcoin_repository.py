@@ -22,26 +22,26 @@ class BitcoinRepository:
     def get_latest_price(self) -> Optional[BitcoinPrice]:
         return self.db.query(BitcoinPrice).order_by(BitcoinPrice.timestamp.desc()).first()
 
-    def update_summary(self, max_price: float, min_price: float, day: date):
+    def update_summary(self, price: float, day: date):
         existing_bitcoin_summary = self.db.query(BitcoinSummary).filter(
             BitcoinSummary.day == day).first()
 
         if existing_bitcoin_summary is None:
             print(f"Adding new summary for the day {day}")
-            summary_to_add = BitcoinSummary(min_price=min_price, max_price=max_price, day=day)
+            summary_to_add = BitcoinSummary(min_price=price, max_price=price, day=day)
             self.db.add(summary_to_add)
             self.db.commit()
             self.db.refresh(summary_to_add)
 
             return None
 
-        print(f"Existing summary {existing_bitcoin_summary.id} for the day {day}. Updating prices")
+        print(f"Existing summary {existing_bitcoin_summary.id} for the day {day}. Updating prices if needed")
 
-        if existing_bitcoin_summary.max_price < max_price:
-            existing_bitcoin_summary.max_price = max_price
+        if existing_bitcoin_summary.max_price < price:
+            existing_bitcoin_summary.max_price = price
 
-        if existing_bitcoin_summary.min_price > min_price:
-            existing_bitcoin_summary.min_price = min_price
+        if existing_bitcoin_summary.min_price > price:
+            existing_bitcoin_summary.min_price = price
 
         self.db.add(existing_bitcoin_summary)
         self.db.commit()
