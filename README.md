@@ -51,15 +51,6 @@ app/api/endpoints.py. I’ll assume your project is called "Bitcoin Tracker" and
 each endpoint, including their purpose, request format, and response format. You can adjust this based on your existing
 README.md content or project details.
 
-Example README.md
-markdown
-
-Collapse
-
-Wrap
-
-Copy
-
 # Bitcoin Tracker
 
 Bitcoin Tracker is a FastAPI-based application that fetches, stores, and provides insights into Bitcoin price data. It
