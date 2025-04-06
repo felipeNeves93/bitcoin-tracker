@@ -1,6 +1,9 @@
 from datetime import date
+from typing import Optional
 
 from app.database.bitcoin_repository import BitcoinRepository
+from app.database.model.bitcoin_price import BitcoinPrice
+from app.database.model.bitcoin_summary import BitcoinSummary
 
 
 class BitcoinService:
@@ -62,3 +65,12 @@ class BitcoinService:
 
     def get_cached_summary(self) -> dict:
         return self._bitcoin_summary_cache
+
+    def get_latest_price(self) -> Optional[BitcoinPrice]:
+        return self.repository.get_latest_price()
+
+    def get_summary_by_date(self, day: date) -> Optional[BitcoinSummary]:
+        return self.repository.get_summary_by_day(day)
+
+    def get_all_summaries(self) -> list[type[BitcoinSummary]]:
+        return self.repository.get_all_summaries()

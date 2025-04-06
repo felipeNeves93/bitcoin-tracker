@@ -1,5 +1,6 @@
-from datetime import datetime
+import datetime
 
+import pytz
 from sqlalchemy import Column, Integer, Float, DateTime
 
 from app.database.database_manager import Base
@@ -10,4 +11,4 @@ class BitcoinPrice(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     price = Column(Float, nullable=False)
-    timestamp = Column(DateTime, default=datetime.utcnow)
+    timestamp = Column(DateTime, default=datetime.datetime.now(pytz.UTC))

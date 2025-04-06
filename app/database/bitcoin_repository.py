@@ -1,5 +1,6 @@
-from datetime import date
-from typing import Optional
+import datetime
+from datetime import date, datetime, timedelta
+from typing import Optional, Type
 
 from sqlalchemy.orm import Session
 
@@ -12,8 +13,8 @@ class BitcoinRepository:
     def __init__(self, db: Session):
         self.db = db
 
-    def insert_price(self, price: float):
-        bitcoin_price = BitcoinPrice(price=price)
+    def insert_price(self, price: float, timestamp=None):
+        bitcoin_price = BitcoinPrice(price=price, timestamp=timestamp)
 
         self.db.add(bitcoin_price)
         self.db.commit()
@@ -49,3 +50,19 @@ class BitcoinRepository:
 
     def get_summary_by_day(self, day: date) -> Optional[BitcoinSummary]:
         return self.db.query(BitcoinSummary).filter(BitcoinSummary.day == day).first()
+
+    def get_all_summaries(self) -> list[Type[BitcoinSummary]]:
+        return self.db.query(BitcoinSummary).all()
+
+    def delete_prices_older_than_90_days(self):
+        date_to_delete = datetime.now() - timedelta(days=90)
+
+        print(f"Date to cut: {date_to_delete}")
+
+        result = self.db.query(BitcoinPrice).filter(BitcoinPrice.timestamp < date_to_delete).delete()
+        self.db.commit()
+
+        return result
+
+    def get_all_prices(self) -> list[type[BitcoinPrice]]:
+        return self.db.query(BitcoinPrice).all()

@@ -4,4 +4,9 @@ python-dotenv
 sqlalchemy
 psycopg2-binary
 pytest
+pytest-mock
+pytest-asyncio
 requests
+pytz
+pydantic
+httpx
