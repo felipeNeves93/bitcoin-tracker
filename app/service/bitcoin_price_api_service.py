@@ -3,13 +3,13 @@ import requests
 from app.service.bitcoin_service import BitcoinService
 
 
-class ApiIntegrationService:
+class BitcoinPriceApiService:
 
     def __init__(self, bitcoin_service: BitcoinService, api_url):
         self.bitcoin_service = bitcoin_service
         self.api_url = api_url
 
-    def get_latest_bitcoin_value(self):
+    def fetch_latest_price(self):
         try:
             print(f"Fetching bitcoin price from {self.api_url}")
             response = requests.get(self.api_url)
