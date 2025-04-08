@@ -32,6 +32,7 @@ async def get_summary_by_day(date: str, bitcoin_service: BitcoinService = Depend
         return BitcoinSummaryResponse(id=summary.id, max_price=summary.max_price, min_price=summary.min_price,
                                       date=summary.day.strftime("%Y-%m-%d"))
     except Exception as e:
+        print(e)
         raise HTTPException(status_code=500, detail=f"Error fetching summary: {str(e)}")
 
 
@@ -44,4 +45,5 @@ async def get_all_summaries(bitcoin_service: BitcoinService = Depends(get_bitcoi
         return [BitcoinSummaryResponse(id=summary.id, max_price=summary.max_price, min_price=summary.min_price,
                                        date=summary.day.strftime("%Y-%m-%d")) for summary in summaries]
     except Exception as e:
+        print(e)
         raise HTTPException(status_code=500, detail=f"Error fetching summary: {str(e)}")

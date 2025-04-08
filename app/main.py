@@ -12,10 +12,21 @@ from app.jobs.bitcoin_price_cleaner_job import BitcoinPriceCleaner
 from app.jobs.bitcoin_price_fetcher_job import BitcoinPriceFetcher
 from app.service.bitcoin_price_api_service import BitcoinPriceApiService
 from app.service.bitcoin_service import BitcoinService
+from fastapi.middleware.cors import CORSMiddleware
 
 # Initialization
 app = FastAPI()
+
 load_dotenv()
+
+ALLOWED_ORIGINS = os.getenv("ALLOWED_ORIGINS", "http://localhost:5173").split(",")
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173"],  # Vite’s default port
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 session = db_manager.get_session()
 bitcoin_repository = BitcoinRepository(session)
