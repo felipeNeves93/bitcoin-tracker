@@ -42,6 +42,11 @@ def test_db():
     app.dependency_overrides.clear()
     Base.metadata.drop_all(bind=db_manager.engine)
 
+    db_manager.get_session().close()
+    app.dependency_overrides.clear()
+    Base.metadata.drop_all(bind=db_manager.engine)
+    db_manager.engine.dispose()
+
 
 @pytest.fixture
 def mock_bitcoin_service(mocker, test_db):

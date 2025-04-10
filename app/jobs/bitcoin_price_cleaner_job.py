@@ -20,6 +20,7 @@ class BitcoinPriceCleaner:
         if not self._thread or not self._thread._is_alive():
             self._stop_event.clear()
             self._thread = Thread(target=self._run_job)
+            self._thread.daemon = True
             self._thread.start()
             print("BitcoinPriceCleaner job started!")
 
