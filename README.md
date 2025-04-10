@@ -46,23 +46,50 @@
 - CoinGecko API access (free tier, no key required)
 - Docker (optional, for local development)
 
-Below is an example of how you can update your project's README.md file to include descriptions of the endpoints from
-app/api/endpoints.py. I’ll assume your project is called "Bitcoin Tracker" and provide a clear, concise description of
-each endpoint, including their purpose, request format, and response format. You can adjust this based on your existing
-README.md content or project details.
+### Email Notifications
 
-# Bitcoin Tracker
+The application includes an automated email notification system that alerts users when Bitcoin's price experiences significant dips.
+Specifically:
 
-Bitcoin Tracker is a FastAPI-based application that fetches, stores, and provides insights into Bitcoin price data. It
-uses a background job to periodically fetch the latest Bitcoin price from an external API (e.g., CoinGecko) and stores
-it in a database. The application exposes RESTful endpoints to retrieve the latest price, daily summaries, and
-historical summary data.
+- Monitors Bitcoin price movements in real-time
+- Sends email notifications when the current price drops below 10% of the historic maximum price
+- Uses SMTP for sending emails (configured for Gmail by default)
+- Customizable threshold through environment variables
 
-## Features
+### Environment Setup
 
-- Fetches Bitcoin prices every 60 seconds and stores them in a database.
-- Provides endpoints to retrieve the latest price, daily price summaries, and all summaries.
-- Built with FastAPI, SQLAlchemy, and Python threading for background tasks.
+To run the project, you need to create a `.env` file in the root directory with the following configuration:
+
+```env
+# Bitcoin API Configuration
+BITCOIN_API_URL=https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd
+ALLOWED_ORIGINS=
+
+# Database Configuration
+# For PostgreSQL (uncomment and configure as needed):
+# DATABASE_URL=postgresql://admin:password@localhost:5432/bitcoin_tracker
+# For SQLite in-memory (development/testing):
+DATABASE_URL=sqlite:///:memory:
+
+# Email Configuration
+SENDER_EMAIL=your.email@gmail.com
+DESTINATION_EMAIL=destination.email@example.com
+SENDER_EMAIL_PASSWORD='your-app-specific-password'  # Gmail App Password
+SMTP_ADDRESS=smtp.gmail.com
+SMTP_PORT=587
+
+# Price Alert Configuration
+BITCOIN_PRICE_DIP_MIN_THRESHOLD=0.1  # 10% threshold for price dip alerts
+```
+
+Notes for email setup:
+1. For Gmail, you need to use an App Password instead of your regular password
+2. To generate an App Password:
+   - Enable 2-Step Verification in your Google Account
+   - Go to Security → App Passwords
+   - Generate a new App Password for the application
+3. Use the generated App Password in the `SENDER_EMAIL_PASSWORD` field
+
 
 ### API Endpoints
 
