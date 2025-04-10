@@ -13,8 +13,7 @@ Base = declarative_base()
 
 class DatabaseManager:
     def __init__(self, database_url=None):
-        self.database_url = database_url or os.getenv("DATABASE_URL",
-                                                      "postgresql://admin:password@localhost:5432/bitcoin_tracker")
+        self.database_url = database_url or os.getenv("DATABASE_URL")
         if not self.database_url:
             raise ValueError("DATABASE_URL is not set and no database_url provided")
         self.engine = create_engine(self.database_url)
