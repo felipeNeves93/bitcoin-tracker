@@ -6,6 +6,7 @@ from sqlalchemy.orm import Session
 
 from app.database.bitcoin_repository import BitcoinRepository
 from app.database.database_manager import DatabaseManager
+from app.integration.email_sender_integration import EmailSenderIntegration
 from app.service.bitcoin_price_api_service import BitcoinPriceApiService
 from app.service.bitcoin_service import BitcoinService
 
@@ -15,6 +16,10 @@ db_manager = DatabaseManager()
 # Dependency functions
 def get_session() -> Session:
     return db_manager.get_session()
+
+
+def get_email_sender() -> EmailSenderIntegration:
+    return EmailSenderIntegration()
 
 
 def get_bitcoin_repository(session: Session = Depends(get_session)) -> BitcoinRepository:

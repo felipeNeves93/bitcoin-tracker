@@ -4,6 +4,7 @@ from datetime import date
 import uvicorn
 from dotenv import load_dotenv
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
 from app.api.endpoints import router as bitcoin_router
 from app.database.bitcoin_repository import BitcoinRepository
@@ -12,7 +13,6 @@ from app.jobs.bitcoin_price_cleaner_job import BitcoinPriceCleaner
 from app.jobs.bitcoin_price_fetcher_job import BitcoinPriceFetcher
 from app.service.bitcoin_price_api_service import BitcoinPriceApiService
 from app.service.bitcoin_service import BitcoinService
-from fastapi.middleware.cors import CORSMiddleware
 
 # Initialization
 app = FastAPI()
@@ -39,14 +39,6 @@ bitcoin_price_cleaner_job = BitcoinPriceCleaner(bitcoin_repository)
 
 # Include the router
 app.include_router(bitcoin_router)
-
-
-@app.on_event("shutdown")
-def shutdown_event():
-    print("Stopping running jobs!")
-    bitcoin_price_fetcher_job.stop_job()
-    bitcoin_price_cleaner_job.stop_job()
-
 
 if __name__ == "__main__":
     uvicorn.run(app, host=os.getenv("APP_HOST", "localhost"), port=os.getenv("APP_PORT", 8000))
