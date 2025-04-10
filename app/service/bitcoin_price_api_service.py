@@ -19,7 +19,7 @@ class BitcoinPriceApiService:
             bitcoin_price: float = float(data["bitcoin"]["usd"])
 
             print(f"Price of {bitcoin_price} fetched successfully! Updating database")
-            self.bitcoin_service.insert_price(bitcoin_price)
+            self.bitcoin_service.update_price(bitcoin_price)
 
             return bitcoin_price
 

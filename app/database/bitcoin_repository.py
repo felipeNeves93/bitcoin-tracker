@@ -2,6 +2,7 @@ import datetime
 from datetime import date, datetime, timedelta
 from typing import Optional, Type
 
+from sqlalchemy import func
 from sqlalchemy.orm import Session
 
 from app.database.model.bitcoin_price import BitcoinPrice
@@ -82,5 +83,19 @@ class BitcoinRepository:
     def get_all_prices(self) -> list[type[BitcoinPrice]]:
         try:
             return self.session.query(BitcoinPrice).all()
+        finally:
+            self.session.close()
+
+    def get_max_historic_price(self, start_date: date, end_date: date = date.today()) -> Optional[float]:
+        try:
+            period_length = (end_date - start_date).days
+            if period_length > 90:
+                raise ValueError("Period should not exceed 90 days!")
+            if period_length < 0:
+                raise ValueError("Start date must be before or equal end date!")
+            return (self.session.query(func.max(BitcoinSummary.max_price))
+                    .filter(BitcoinSummary.day <= end_date)
+                    .filter(BitcoinSummary.day >= start_date)
+                    .scalar())
         finally:
             self.session.close()

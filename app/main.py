@@ -9,6 +9,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.api.endpoints import router as bitcoin_router
 from app.database.bitcoin_repository import BitcoinRepository
 from app.dependencies import db_manager
+from app.integration.email_sender_integration import EmailSenderIntegration
 from app.jobs.bitcoin_price_cleaner_job import BitcoinPriceCleaner
 from app.jobs.bitcoin_price_fetcher_job import BitcoinPriceFetcher
 from app.service.bitcoin_price_api_service import BitcoinPriceApiService
@@ -30,7 +31,7 @@ app.add_middleware(
 
 session = db_manager.get_session()
 bitcoin_repository = BitcoinRepository(session)
-bitcoin_service = BitcoinService(bitcoin_repository, date.today())
+bitcoin_service = BitcoinService(bitcoin_repository, date.today(), EmailSenderIntegration())
 bitcoin_price_api_service = BitcoinPriceApiService(bitcoin_service, os.getenv("BITCOIN_API_URL"))
 
 # Jobs

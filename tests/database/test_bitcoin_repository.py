@@ -131,3 +131,22 @@ def test_delete_prices_older_than_90_days(db_session: Session):
 
     assert len(prices) == 1
     assert prices[0].price == 50
+
+
+def test_get_max_historic_price(db_session: Session):
+    repository = BitcoinRepository(db_session)
+
+    max_price = 500
+
+    day = date(2025, 1, 10)
+    day_two = date(2025, 1, 8)
+    day_three = date(2025, 1, 21)
+
+    repository.update_summary(max_price - 400, day)
+    repository.update_summary(max_price, day_two)
+    repository.update_summary(max_price + 1000, day_three)
+
+    max_historic_price = repository.get_max_historic_price(start_date=date(2025, 1, 1), end_date=date(2025, 1, 31))
+
+    assert max_historic_price is not None
+    assert max_historic_price == 1500
