@@ -28,7 +28,8 @@ async def get_summary_by_day(date: str, bitcoin_service: BitcoinService = Depend
         converted_date = datetime.strptime(date, "%Y-%m-%d").date()
         summary = bitcoin_service.get_summary_by_date(converted_date)
         if summary is None:
-            raise HTTPException(status_code=404, detail=f"No summary found for given date {date}")
+            return BitcoinSummaryResponse(id=0, max_price=0.0, min_price=0.0,
+                                          date=date)
         return BitcoinSummaryResponse(id=summary.id, max_price=summary.max_price, min_price=summary.min_price,
                                       date=summary.day.strftime("%Y-%m-%d"))
     except Exception as e:
@@ -36,7 +37,7 @@ async def get_summary_by_day(date: str, bitcoin_service: BitcoinService = Depend
         raise HTTPException(status_code=500, detail=f"Error fetching summary: {str(e)}")
 
 
-@router.get("/prices/summaries/", response_model=list[BitcoinSummaryResponse])
+@router.get("/prices/summaries", response_model=list[BitcoinSummaryResponse])
 async def get_all_summaries(bitcoin_service: BitcoinService = Depends(get_bitcoin_service)):
     try:
         summaries = bitcoin_service.get_all_summaries()

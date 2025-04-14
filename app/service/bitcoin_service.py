@@ -39,14 +39,6 @@ class BitcoinService:
             self.repository.insert_price(price)
 
             self.update_summary(price)
-            self.notify_email_bitcoin_price_dip()
-        except Exception as e:
-            print(f"An error occurred while inserting price: {e}")
-        try:
-            print(f"Inserting new price for bitcoin {price}")
-            self.repository.insert_price(price)
-
-            self.update_summary(price)
         except Exception as e:
             print(f"An error occurred while inserting price: {e}")
 

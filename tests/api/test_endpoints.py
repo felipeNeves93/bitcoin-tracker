@@ -2,9 +2,9 @@ from datetime import datetime, date
 from unittest.mock import MagicMock
 
 import pytest
-from app.database.database_manager import Base
 from fastapi.testclient import TestClient
 
+from app.database.database_manager import Base
 from app.database.database_manager import DatabaseManager
 from app.dependencies import get_bitcoin_service, get_session
 from app.main import app
@@ -114,8 +114,14 @@ async def test_get_summary_by_day_not_found(mock_bitcoin_service):
 
     response = client.get("/bitcoin/prices/summary/2025-04-06")
 
-    assert response.status_code == 500
-    assert response.json() == {"detail": "Error fetching summary: 404: No summary found for given date 2025-04-06"}
+    assert response.status_code == 200
+
+    assert response.json() == {
+        "id": 0,
+        "max_price": 0.0,
+        "min_price": 0.0,
+        "date": "2025-04-06"
+    }
 
 
 @pytest.mark.asyncio
@@ -134,7 +140,7 @@ async def test_get_all_summaries_success(mock_bitcoin_service):
     ]
     mock_bitcoin_service.get_all_summaries.return_value = mock_summaries
 
-    response = client.get("/bitcoin/prices/summaries/")
+    response = client.get("/bitcoin/prices/summaries")
 
     assert response.status_code == 200
     assert response.json() == [
@@ -147,7 +153,7 @@ async def test_get_all_summaries_success(mock_bitcoin_service):
 async def test_get_all_summaries_empty(mock_bitcoin_service):
     mock_bitcoin_service.get_all_summaries.return_value = []
 
-    response = client.get("/bitcoin/prices/summaries/")
+    response = client.get("/bitcoin/prices/summaries")
 
     assert response.status_code == 500
     assert response.json() == {"detail": "Error fetching summary: 404: No summaries found!"}
@@ -157,7 +163,7 @@ async def test_get_all_summaries_empty(mock_bitcoin_service):
 async def test_get_all_summaries_none(mock_bitcoin_service):
     mock_bitcoin_service.get_all_summaries.return_value = None
 
-    response = client.get("/bitcoin/prices/summaries/")
+    response = client.get("/bitcoin/prices/summaries")
 
     assert response.status_code == 500
     assert response.json() == {"detail": "Error fetching summary: 404: No summaries found!"}
@@ -167,7 +173,7 @@ async def test_get_all_summaries_none(mock_bitcoin_service):
 async def test_get_all_summaries_error(mock_bitcoin_service):
     mock_bitcoin_service.get_all_summaries.side_effect = Exception("Database error")
 
-    response = client.get("/bitcoin/prices/summaries/")
+    response = client.get("/bitcoin/prices/summaries")
 
     assert response.status_code == 500
     assert response.json() == {"detail": "Error fetching summary: Database error"}

@@ -26,8 +26,9 @@ def get_bitcoin_repository(session: Session = Depends(get_session)) -> BitcoinRe
     return BitcoinRepository(session)
 
 
-def get_bitcoin_service(repository: BitcoinRepository = Depends(get_bitcoin_repository)) -> BitcoinService:
-    return BitcoinService(repository, date.today())
+def get_bitcoin_service(repository: BitcoinRepository = Depends(get_bitcoin_repository),
+                        email_sender: EmailSenderIntegration = Depends(get_email_sender)) -> BitcoinService:
+    return BitcoinService(repository, date.today(), email_sender)
 
 
 def get_bitcoin_price_api_service(
